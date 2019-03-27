@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "homepage": "https://AnkanGranero.github.io/gottaCatchEmAll.git",
     "axios": "^0.18.0",
     "gh-pages": "^2.0.1",
+    "homepage": "https://AnkanGranero.github.io/gottaCatchEmAll",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
     "react-router-dom": "^5.0.0",

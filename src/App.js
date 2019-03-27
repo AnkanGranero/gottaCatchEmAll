@@ -33,12 +33,7 @@ function getPokemonInfo(id) {
   console.log(ArrOfAbilities)
 /*   console.log(ArrOfAbilities.map((item, i) => console.log(item.abilities[i].ability.name)))
  */}
-function myKindOfData(data) {
-  let sum = [];
-  let arrOfPokes = data.pokemon
-  arrOfPokes.forEach(item => sum.push(item.pokemon))
-  return sum
-}
+
 
 
 
@@ -115,6 +110,12 @@ class App extends Component {
     return fetch(`${API_URL}type/${field}`)
       .then(response => response.json())
       .then(data => this.myKindOfData)
+  }
+  myKindOfData(data) {
+    let sum = [];
+    let arrOfPokes = data.pokemon
+    arrOfPokes.forEach(item => sum.push(item.pokemon))
+    return sum
   }
 
   handleFilterButtons(field, event) {
