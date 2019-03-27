@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "homepage": "https://github.com/AnkanGranero/gottaCatchEmAll.git",
+    "homepage": "https://AnkanGranero.github.io/gottaCatchEmAll.git",
     "axios": "^0.18.0",
     "gh-pages": "^2.0.1",
     "react": "^16.8.5",
