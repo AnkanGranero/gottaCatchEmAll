@@ -1,63 +1,49 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { HashRouter as Router, Route, Link } from 'react-router-dom';
-import axios from "axios";
 import { Z_FILTERED } from 'zlib';
 import { isAbsolute } from 'path';
 const API_URL = "https://pokeapi.co/api/v2/"
-const API_URL2 = "https://pokeapi.co/api/v2/type/"
 
 
 
-/* function gottaCatchEmAll() {
-  return axios.get(API_URL)
-    .then(({ data }) => data.results)
-    .then(({ data }) => this.setState({ data }))
-    .catch((err) => console.log(err));;
-} */
 
 
-
-/* const axios = require('axios'); */
 
 function getPokemonImage(id) {
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
 }
-function getPokemonInfo(id) {
-  let ArrOfAbilities = [];
-  fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-    .then(response => response.json())
-    .then(data => ArrOfAbilities.push(data.abilities))
-
-  console.log(ArrOfAbilities)
-/*   console.log(ArrOfAbilities.map((item, i) => console.log(item.abilities[i].ability.name)))
- */}
 
 
 
 
 
-class Module extends Component {
+
+class Modal extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
-      pokemonInfo: ""
+      showModal: true
     }
-
+  }
+  openModal() {
+    this.setState({
+      showModal: true
+    })
 
   }
-  getPokemonInfo(id) {
-    let ArrOfAbilities = [];
-    fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-      .then(response => response.json())
-      .then(data => ArrOfAbilities.push(data.abilities))
-    this.setState(ArrOfAbilities)
+
+  closeModal() {
+    this.setState(
+      {
+        showModal: false
+      }
+    )
   }
+
 
   render() {
-    /* console.log(this.state) */
+
     const modalStyle = {
       height: "100vh",
       width: "100vh",
@@ -69,15 +55,19 @@ class Module extends Component {
     const imageStyle = {
       alignContent: "center"
     }
+
+    const showPokemon = this.props.showPokemon
+
     const id = this.props.pokemonId
-    const modalius = <div style={modalStyle}
-      onClick={this.props.onClose.bind(this)}>
+    const pokeInfo = <div style={modalStyle}
+      onClick={this.closeModal.bind(this)}>
       <h1>{}></h1>
       <img src={getPokemonImage(this.props.pokemonId)} style={imageStyle}></img>
-      <info>{this.getPokemonInfo(this.props.pokemonId)}</info>
+      <h2>Abilities</h2>
+      <ul>{showPokemon}</ul>
     </div>
 
-    return <div>{modalius}</div>
+    return this.state.showModal && <div>{pokeInfo}</div>
   }
 }
 
@@ -89,7 +79,8 @@ class App extends Component {
       pokemons: [],
       search: "",
       showModal: false,
-      modalId: ""
+      modalId: "",
+      showPokemon: [],
     }
 
   }
@@ -101,7 +92,7 @@ class App extends Component {
   }
 
   gottaCatchEmAll() {
-    return fetch(API_URL + "pokemon/?limit=1000")
+    return fetch(API_URL + "pokemon/?limit=70")
       .then(response => response.json())
       .then(data => this.setState({ pokemons: data.results }))
 
@@ -138,10 +129,17 @@ class App extends Component {
 
   handleOpenModal(id) {
 
+    fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+      .then(response => response.json())
+      .then(data => data.abilities)
+      .then(data => this.setState({ showPokemon: data }))
+
     this.setState({
       showModal: true,
-      modalId: id
+      modalId: id,
+
     })
+
 
   }
   handleCloseModal() {
@@ -152,7 +150,6 @@ class App extends Component {
 
   handleSearch() {
     this.setState({ search: this.refs.searchInput.value })
-
   }
 
   getIdFromUrl(url) {
@@ -175,7 +172,7 @@ class App extends Component {
       margin: "10px",
       borderStyle: "dotted",
       textAlign: "center"
-    }
+    };
 
 
     const pokemons = this.state.pokemons.slice()
@@ -191,13 +188,13 @@ class App extends Component {
         </div>
       </div>)
 
-    /*  const modal = <div style={modalStyle}
-       onClick={this.handleCloseModal.bind(this)}>
-       <h1>{this.state.modalId}></h1>
- 
-       <img src={getPokemonImage(this.state.modalId)} style={imageStyle}></img>
- 
-     </div> */
+    const showPokemon = this.state.showPokemon
+      .slice()
+      .map(item => !item.ability.name ? true :
+        <li>{item.ability.name}
+        </li>)
+
+
 
 
     return (
@@ -214,7 +211,11 @@ class App extends Component {
           <input type="text" ref="searchInput"></input>
           <button onClick={this.handleSearch.bind(this)}>Search
           </button></div>
-        {this.state.showModal && (<Module onClose={this.handleCloseModal} pokemonId={this.state.modalId}></Module>)
+        {this.state.showModal && (<Modal
+          onClose={this.handleCloseModal}
+          pokemonId={this.state.modalId}
+          showPokemon={showPokemon}>
+        </Modal>)
         }
         <div style={styles}>
           {pokemons}
@@ -227,11 +228,7 @@ class App extends Component {
 
 export default App;
 
-/*{showModal && (<div styles={modalStyles}>
-<p>showing modal</p>
-<button onClick= this.handleclose modal
-</div>)}
-*/
+
 
 // height : 100vh (view hight)
 /* position: absolute:
